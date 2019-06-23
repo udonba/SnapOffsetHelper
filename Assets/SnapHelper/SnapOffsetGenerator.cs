@@ -49,6 +49,8 @@ namespace Udonba.SnapHelper
         {
             if (!log)
                 return;
+            if (gripTransform == null)
+                return;
 
             var param = GetSnapOffsetParams();
 

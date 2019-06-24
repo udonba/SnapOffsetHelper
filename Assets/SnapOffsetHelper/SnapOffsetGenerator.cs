@@ -4,8 +4,11 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 
-namespace Udonba.SnapHelper
+namespace Udonba.SnapOffsetHelper
 {
+    /// <summary>
+    /// Generate prefab file for OVRGrabber.SnapOffset field.
+    /// </summary>
     [RequireComponent(typeof(OVRGrabbable))]
     public class SnapOffsetGenerator : MonoBehaviour
     {
@@ -13,6 +16,7 @@ namespace Udonba.SnapHelper
         private const char UnitySeparatorChar = '/';
         private const string PrefabExtension = ".prefab";
         private const string PrefabDirectoryName = "Prefabs";
+        public const string Prefix = "[SnapOffsetHelper] ";
 
         private OVRGrabbable grabbable = null;
         protected OVRGrabbable Grabbable
@@ -25,18 +29,12 @@ namespace Udonba.SnapHelper
             }
         }
 
-        [SerializeField, Tooltip("Grabber.gripTransform, or offset transform (inside grabbable object)")]
         private Transform gripTransform = null;
         public Transform GripTransform
         {
             get { return gripTransform; }
+            set { gripTransform = value; }
         }
-
-        private string outputDirectory = string.Empty;
-        private bool dirSet = false;
-        
-        [SerializeField, Tooltip("Show right-hand where place to grab.")]
-        private bool log = true;
 
         private int selectedIndex = 0;
         public int SelectedIndex
@@ -45,7 +43,7 @@ namespace Udonba.SnapHelper
             set { selectedIndex = value; }
         }
 
-        private string[] prefabDirectories = new string[0];
+        private string[] prefabDirectories = null;
         public string[] PrefabDirectories
         {
             get { return prefabDirectories; }
@@ -61,18 +59,12 @@ namespace Udonba.SnapHelper
             var ret = new SnapOffsetParam
             {
                 Name = string.Format("SnapOffset({0})", Grabbable.gameObject.name),
-                Position = gripTransform.InverseTransformPoint(Grabbable.transform.position),
-                Rotation = Quaternion.Inverse(gripTransform.rotation) * Grabbable.transform.rotation
+                Position = GripTransform.InverseTransformPoint(Grabbable.transform.position),
+                Rotation = Quaternion.Inverse(GripTransform.rotation) * Grabbable.transform.rotation
             };
 
-            Debug.LogFormat("Position : ({0:F4}, {1:F4}, {2:F4})",
-                ret.Position.x, ret.Position.y, ret.Position.z);
-            Debug.LogFormat("Rotation : ({0:F4}, {1:F4}, {2:F4})",
-                ret.Rotation.eulerAngles.x, ret.Rotation.eulerAngles.y, ret.Rotation.eulerAngles.z);
-            
             return ret;
         }
-
 
         /// <summary>
         /// Update 'Prefabs' directories list.
@@ -83,7 +75,7 @@ namespace Udonba.SnapHelper
         }
 
         /// <summary>
-        /// Get 'Prefabs' directories list. (for display)
+        /// Get 'Prefabs' directories list. (for display pop-up menu)
         /// </summary>
         /// <returns></returns>
         public string[] GetDisplayDirectories()
@@ -118,7 +110,7 @@ namespace Udonba.SnapHelper
             if (0 < directories.Length)
             {
                 // Get highest hierarchy 'Prefabs' directory
-                System.Array.Sort<string>(directories, CompareByHierarchy);
+                Array.Sort<string>(directories, CompareByHierarchy);
             }
             else
             {
@@ -133,6 +125,11 @@ namespace Udonba.SnapHelper
             return directories;
         }
 
+        /// <summary>
+        /// Create and get SnapOffset instance root GameObject.
+        /// </summary>
+        /// <param name="param"></param>
+        /// <returns></returns>
         public GameObject CreateSnapOffsetObject(SnapOffsetParam param)
         {
             var obj = new GameObject(param.Name);
@@ -155,41 +152,7 @@ namespace Udonba.SnapHelper
 
             return ret.ReplaceSeparator(ReplaceOrder.SystemToUnity);
         }
-
-
-        /// <summary>
-        /// Get (or create) 'Prefabs' directory path
-        /// </summary>
-        /// <returns></returns>
-        private static string GetDefaultPrefabDirectory()
-        {
-            string ret = Application.dataPath + UnitySeparatorChar + PrefabDirectoryName;
-
-            // Find 'Prefabs' directory in assets
-            var assetsPath = Application.dataPath.ReplaceSeparator(ReplaceOrder.UnityToSystem);
-            var searchPattern = "*" + PrefabDirectoryName;
-            var directories = Directory.GetDirectories(assetsPath, searchPattern, SearchOption.AllDirectories);
-            if (0 < directories.Length)
-            {
-                // Get highest hierarchy 'Prefabs' directory
-                System.Array.Sort<string>(directories, CompareByHierarchy);
-                ret = directories[0].ReplaceSeparator(ReplaceOrder.SystemToUnity);
-
-                string msg = "There are " + directories.Length + " 'Prefabs' directories.\n";
-                foreach (var s in directories)
-                    msg += s + "\n";
-                Debug.Log(msg);
-            }
-            else
-            {
-                // Create 'Prefabs' directory
-                var dir = ret.ReplaceSeparator(ReplaceOrder.UnityToSystem);
-                var info = Directory.CreateDirectory(dir);
-                Debug.LogFormat("Created directory. ({0})", info.FullName);
-            }
-
-            return ret;
-        }
+        
         /// <summary>
         /// Sort by hierarchy ascending order.
         /// </summary>
@@ -207,19 +170,32 @@ namespace Udonba.SnapHelper
 
             return count1 - count2;
         }
-
-
 #endif
     }
 
     /// <summary>
-    /// Position and Rotation
+    /// Name, Position and Rotation
     /// </summary>
     public class SnapOffsetParam
     {
-        public string Name { get; set; }
-        public Vector3 Position { get; set; }
-        public Quaternion Rotation { get; set; }
+        private string name = string.Empty;
+        public string Name
+        {
+            get { return name; }
+            set { name = value; }
+        }
+        private Vector3 position = new Vector3(0, 0, 0);
+        public Vector3 Position
+        {
+            get { return position; }
+            set { position = value; }
+        }
+        private Quaternion rotation = Quaternion.identity;
+        public Quaternion Rotation
+        {
+            get { return rotation; }
+            set { rotation = value; }
+        }
     }
 
 }

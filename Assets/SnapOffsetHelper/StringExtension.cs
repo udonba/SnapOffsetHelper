@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace Udonba.SnapHelper
+namespace Udonba.SnapOffsetHelper
 {
     public static class StringExtension
     {

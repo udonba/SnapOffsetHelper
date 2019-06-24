@@ -619,9 +619,9 @@ PlayerSettings:
   facebookXfbml: 0
   facebookFrictionlessRequests: 1
   apiCompatibilityLevel: 6
-  cloudProjectId: f18c3838-283b-4b9e-b7a0-5594096761ad
+  cloudProjectId: b81543d0-f277-4a47-9c24-bde313c4819f
   framebufferDepthMemorylessMode: 0
-  projectName: OVRGrabberTest
+  projectName: SnapOffsetHelper
   organizationId: micki_d2
   cloudEnabled: 0
   enableNativePlatformBackendsForNewInputSystem: 0

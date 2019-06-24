@@ -117,7 +117,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3449117223468337460}
   - component: {fileID: 1553908084164726124}
-  - component: {fileID: 3942244014849301605}
   - component: {fileID: 8683630802638214954}
   m_Layer: 0
   m_Name: Gun
@@ -163,23 +162,6 @@ MonoBehaviour:
   - {fileID: 6210736845542198972}
   - {fileID: 7031214969225252054}
   - {fileID: 2075619515645895331}
---- !u!114 &3942244014849301605
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3446622325365719322}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 02d61468f8b77ae4b92c344bc9a600fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_allowOffhandGrab: 1
-  m_snapPosition: 0
-  m_snapOrientation: 0
-  m_snapOffset: {fileID: 0}
-  m_grabPoints: []
 --- !u!54 &8683630802638214954
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -192,7 +174,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 0
+  m_IsKinematic: 1
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0

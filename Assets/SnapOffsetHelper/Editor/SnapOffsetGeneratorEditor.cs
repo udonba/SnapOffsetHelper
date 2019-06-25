@@ -60,14 +60,6 @@ namespace Udonba.SnapOffsetHelper
                 needUpdateDirectories = true;
             }
 
-            //target.SelectedIndex
-            //    = EditorGUILayout.Popup(label_SaveDirectory, target.SelectedIndex, this.displayDirectories);
-
-            //target.GripTransform
-            //    = EditorGUILayout.ObjectField(label_GripTransform, target.GripTransform, typeof(Transform), true) as Transform;
-
-            //deleteInstanceRoot = EditorGUILayout.Toggle(label_DeleteInstance, this.deleteInstanceRoot);
-
             prop_SelectedIndex.intValue 
                 = EditorGUILayout.Popup(label_SaveDirectory, prop_SelectedIndex.intValue, this.displayDirectories);
 

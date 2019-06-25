@@ -2,7 +2,7 @@
 Class and editor-extension to more easily generate snapOffset.
 
 ## Usage
-1. Import [Oculus Integration](https://assetstore.unity.com/packages/tools/integration/oculus-integration-82022).
+1. Import [Oculus Integration](https://assetstore.unity.com/packages/tools/integration/oculus-integration-82022) and [SnapOffsetHelper](https://github.com/udonba/SnapOffsetHelper/releases/tag/v2018.4.0).
 
 1. Add "SnapOffssetGenerator" to OVRGrabbable object.  
 ![image01](https://github.com/udonba/SnapOffsetHelper/blob/images/usage_001.png)

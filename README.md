@@ -1,6 +1,0 @@
-# SnapOffsetHelper
-
-## Usage
-
-
-## License

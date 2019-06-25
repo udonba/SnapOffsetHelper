@@ -13,28 +13,45 @@ namespace Udonba.SnapOffsetHelper
     [CustomEditor(typeof(SnapOffsetGenerator))]
     public class SnapOffsetGeneratorEditor : Editor
     {
+        private const string PropPath_SelectedIndex = "selectedIndex";
+        private const string PropPath_GripTransform = "gripTransform";
+        private const string PropPath_CreateInstance = "createInstance";
+
         private new SnapOffsetGenerator target = null;
-        private bool deleteInstanceRoot = true;
+        private bool leaveInstanceRoot = true;
         private string[] displayDirectories = null;
         private bool needUpdateDirectories = true;
 
-        private GUIContent label_GripTransform
-            = new GUIContent("Grip Transform", "Grabber's gripTransform, or offset transform (inside grabbable object)");
-        private GUIContent label_DeleteInstance
-            = new GUIContent("Delete Instance", "Delete instance-root object after generate prefab.");
-        private GUIContent label_SaveDirectory 
+        private SerializedProperty prop_SelectedIndex;
+        private SerializedProperty prop_GripTransform;
+        private SerializedProperty prop_CreateInstance;
+
+        private GUIContent label_SaveDirectory
             = new GUIContent("Generate to", "'Prefabs' directory, to Generate *.prefab file.");
+        private GUIContent label_GripTransform
+            = new GUIContent("Grip Transform", "Grabber's gripTransform, or offset transform. (inside grabbable object)");
+        private GUIContent label_CreateInstance
+            = new GUIContent("Create Instance", "Create instance object in scene.");
         private GUIContent label_GenerateButton
             = new GUIContent("Generate SnapOffset Prefab");
+
+        private void OnEnable()
+        {
+            prop_SelectedIndex = serializedObject.FindProperty(PropPath_SelectedIndex);
+            prop_GripTransform = serializedObject.FindProperty(PropPath_GripTransform);
+            prop_CreateInstance = serializedObject.FindProperty(PropPath_CreateInstance);
+        }
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
 
+            target = base.target as SnapOffsetGenerator;
+            
             EditorApplication.projectChanged -= EditorApplication_projectChanged;
             EditorApplication.projectChanged += EditorApplication_projectChanged;
 
-            target = base.target as SnapOffsetGenerator;
+            serializedObject.Update();
                                                   
             UpdateDirectoriesIfNeed();
             if (target.PrefabDirectories == null || target.PrefabDirectories.Length == 0
@@ -43,13 +60,23 @@ namespace Udonba.SnapOffsetHelper
                 needUpdateDirectories = true;
             }
 
-            target.SelectedIndex
-                = EditorGUILayout.Popup(label_SaveDirectory, target.SelectedIndex, this.displayDirectories);
+            //target.SelectedIndex
+            //    = EditorGUILayout.Popup(label_SaveDirectory, target.SelectedIndex, this.displayDirectories);
 
-            target.GripTransform
-                = EditorGUILayout.ObjectField(label_GripTransform, target.GripTransform, typeof(Transform), true) as Transform;
-            
-            deleteInstanceRoot = EditorGUILayout.Toggle(label_DeleteInstance, this.deleteInstanceRoot);
+            //target.GripTransform
+            //    = EditorGUILayout.ObjectField(label_GripTransform, target.GripTransform, typeof(Transform), true) as Transform;
+
+            //deleteInstanceRoot = EditorGUILayout.Toggle(label_DeleteInstance, this.deleteInstanceRoot);
+
+            prop_SelectedIndex.intValue 
+                = EditorGUILayout.Popup(label_SaveDirectory, prop_SelectedIndex.intValue, this.displayDirectories);
+
+            prop_GripTransform.objectReferenceValue
+                = EditorGUILayout.ObjectField(label_GripTransform, prop_GripTransform.objectReferenceValue, typeof(Transform), true);
+
+            prop_CreateInstance.boolValue
+                = EditorGUILayout.Toggle(label_CreateInstance, prop_CreateInstance.boolValue);
+            leaveInstanceRoot = prop_CreateInstance.boolValue;
 
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
@@ -68,6 +95,7 @@ namespace Udonba.SnapOffsetHelper
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
 
+            serializedObject.ApplyModifiedProperties();
         }
 
         /// <summary>
@@ -92,11 +120,12 @@ namespace Udonba.SnapOffsetHelper
             var param = target.GetSnapOffsetParams();
             var obj = target.CreateSnapOffsetObject(param);
             var path = target.GetSavePath(param.Name);
+            GameObject prefab = null;
 
             try
             {
                 // User can undo
-                PrefabUtility.SaveAsPrefabAssetAndConnect(obj, path, InteractionMode.UserAction);
+                prefab = PrefabUtility.SaveAsPrefabAssetAndConnect(obj, path, InteractionMode.UserAction);
 
                 var fileName = Path.GetFileName(path);
                 Debug.LogFormat(SnapOffsetGenerator.Prefix + "Success. Generated '{0}'. \nPath=\"{1}\"", fileName, path);
@@ -106,7 +135,10 @@ namespace Udonba.SnapOffsetHelper
                 Debug.LogFormat(SnapOffsetGenerator.Prefix + "<Color=Red>Failed to generate prefab.</Color>\nPath=\"{0}\"\n{1}", path, ex);
             }
 
-            if (deleteInstanceRoot && obj != null)
+            if (prefab != null)
+                EditorGUIUtility.PingObject(prefab);
+
+            if (!leaveInstanceRoot && obj != null)
                 DestroyImmediate(obj, false);
         }
 

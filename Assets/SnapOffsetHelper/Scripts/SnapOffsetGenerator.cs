@@ -29,6 +29,7 @@ namespace Udonba.SnapOffsetHelper
             }
         }
 
+        [SerializeField, HideInInspector]
         private Transform gripTransform = null;
         public Transform GripTransform
         {
@@ -36,6 +37,7 @@ namespace Udonba.SnapOffsetHelper
             set { gripTransform = value; }
         }
 
+        [SerializeField, HideInInspector]
         private int selectedIndex = 0;
         public int SelectedIndex
         {
@@ -43,6 +45,14 @@ namespace Udonba.SnapOffsetHelper
             set { selectedIndex = value; }
         }
 
+        [SerializeField, HideInInspector]
+        private bool createInstance = false;
+        public bool CreateInstance
+        {
+            get { return createInstance; }
+            set { createInstance = value; }
+        }
+        
         private string[] prefabDirectories = null;
         public string[] PrefabDirectories
         {
@@ -56,11 +66,17 @@ namespace Udonba.SnapOffsetHelper
         /// <returns>Offset position and rotation</returns>
         public SnapOffsetParam GetSnapOffsetParams()
         {
+            var gripScale = GripTransform.lossyScale;
+            var snapPos = GripTransform.InverseTransformPoint(Grabbable.transform.position);
+            snapPos = new Vector3(snapPos.x / gripScale.x, snapPos.y / gripScale.y, snapPos.z / gripScale.z);
+
+            var snapRot = Quaternion.Inverse(GripTransform.rotation) * Grabbable.transform.rotation;
+
             var ret = new SnapOffsetParam
             {
                 Name = string.Format("SnapOffset({0})", Grabbable.gameObject.name),
-                Position = GripTransform.InverseTransformPoint(Grabbable.transform.position),
-                Rotation = Quaternion.Inverse(GripTransform.rotation) * Grabbable.transform.rotation
+                Position = snapPos,
+                Rotation = snapRot
             };
 
             return ret;
@@ -170,6 +186,12 @@ namespace Udonba.SnapOffsetHelper
 
             return count1 - count2;
         }
+
+        public void DestroyThis()
+        {
+            DestroyImmediate(this);
+        }
+
 #endif
     }
 

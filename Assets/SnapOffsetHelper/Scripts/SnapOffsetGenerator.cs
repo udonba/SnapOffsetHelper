@@ -68,7 +68,7 @@ namespace Udonba.SnapOffsetHelper
         {
             var gripScale = GripTransform.lossyScale;
             var snapPos = GripTransform.InverseTransformPoint(Grabbable.transform.position);
-            snapPos = new Vector3(snapPos.x / gripScale.x, snapPos.y / gripScale.y, snapPos.z / gripScale.z);
+            snapPos = new Vector3(snapPos.x * gripScale.x, snapPos.y * gripScale.y, snapPos.z * gripScale.z);
 
             var snapRot = Quaternion.Inverse(GripTransform.rotation) * Grabbable.transform.rotation;
 

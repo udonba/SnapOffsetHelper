@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1158392410644594212
+--- !u!1 &3896162237055274474
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,23 +8,23 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 3467038385258525121}
+  - component: {fileID: 5729077313742475485}
   m_Layer: 0
-  m_Name: Offset
+  m_Name: SnapOffset(Gun)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &3467038385258525121
+--- !u!4 &5729077313742475485
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1158392410644594212}
-  m_LocalRotation: {x: 0.23396271, y: 0.23396271, z: 0.6672792, w: 0.6672791}
-  m_LocalPosition: {x: 0.08191119, y: -0.0061999876, z: -0.092130736}
+  m_GameObject: {fileID: 3896162237055274474}
+  m_LocalRotation: {x: 0.13052624, y: 0, z: 0, w: 0.9914449}
+  m_LocalPosition: {x: 0.011399984, y: -0.10072875, z: 0.012350315}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
